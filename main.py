@@ -251,6 +251,7 @@ def play_guess_the_word():
                     
                     break
                 elif play_again == 'N':
+                    print()
                     print('Thanks for playing - goodbye!')
                     play_game = False
                     break
