@@ -5,9 +5,10 @@
 ####################################################
 #TO DO
 ####################################################
-#if they know the whole word, can they guess it all at once?
-
-#allow the user to start the game again
+# add feature to guess the whole word at once
+# allow users to choose how many guesses they get
+# hints?
+# add comments to explain what's happening in the code
 
 ####################################################
 #IMPORT
@@ -145,92 +146,117 @@ def check_win(list):
 #GAME PLAY
 ####################################################
 
-while True:
-    #pick a random word to be the solution
-    # solution = gen_rand_word()
-    solution = 'abc'
-    
-    #create a list of blanks for each letter in the solution
-    display_list = solution_to_list_of_blanks(solution)
-    
+def play_guess_the_word():
+
     play_game = True
-    win = False
-    chances_left = 7
-    wrong_letters = []
-    delay = 2
     
-    while play_game and not win:
-        #greet the user, explain the rules
-        greet_user()
-        print_game_rules()
+    while play_game:
+        #pick a random word to be the solution
+        solution = gen_rand_word()
         
-        #print the display word (blank spaces/guesses) to the console
-        display_string = ' '.join(display_list)
-        print_box(display_string)
-
-        #print the letters guessed that are not in the word, if there are any
-        if len(wrong_letters) > 0:
-            print()
-            cprint('not in the word:', 'red')
-            wrong_lets = list_to_string(wrong_letters)
-            cprint(wrong_lets, 'red')
-            print()
-            if chances_left > 1:
-                cprint(f'chances left: {chances_left}', 'yellow')
-            elif chances_left == 1:
-                cprint(f'chances left: {chances_left}', 'magenta')
-    
-        #ask the user to guess a letter
-        letter_guessed = ask_for_letter(display_list, wrong_letters)
-    
-        #check if the letter guessed is in the word
-        letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
-    
-        #if the letter guessed is not in the word, tell the user and display the letters guessed that aren't in the word, as well as the number of guesses left (maybe empty boxes?)
-        if not letter_guessed_in_word:
-            delay = 2
-            update_wrong_guesses(wrong_letters, letter_guessed)
-            chances_left -= 1
-            cprint(f'"{letter_guessed}" is not in the word.', 'red')
-            print()
-            if chances_left > 1:
-                cprint(f'You have {chances_left} chances left.', 'yellow')
-            elif chances_left == 1:
-                cprint('You only have one chance left!', 'magenta')
-            print()
+        #create a list of blanks for each letter in the solution
+        display_list = solution_to_list_of_blanks(solution)
+        
+        won = False
+        lost = False
+        chances_left = 7
+        wrong_letters = []
+        delay = 2
+        
+        while not lost and not won:
+            #greet the user, explain the rules
+            greet_user()
+            print_game_rules()
             
-        # if the letter IS in the word, update the word
-        elif letter_guessed_in_word:
-            delay = 1
-            indices = ind_of_letter(letter_guessed, solution)
-            display_list = update_display(display_list, letter_guessed, indices)
-            cprint(f'"{letter_guessed}" is in the word!', 'green')
-            print()
-            # check if the user has won
-            if check_win(display_list):
-                cprint("Congratulations, you won!", 'blue')
-                print()
-                cprint(f'The word was: {solution}', 'blue')
-                win = True
+            #print the display word (blank spaces/guesses) to the console
+            display_string = ' '.join(display_list)
+            print_box(display_string)
     
-        if chances_left == 0:
-            print('So sorry, you lost!')
+            #print the letters guessed that are not in the word, if there are any
+            if len(wrong_letters) > 0:
+                print()
+                cprint('not in the word:', 'red')
+                wrong_lets = list_to_string(wrong_letters)
+                cprint(wrong_lets, 'red')
+                print()
+                if chances_left > 1:
+                    cprint(f'chances left: {chances_left}', 'yellow')
+                elif chances_left == 1:
+                    cprint(f'chances left: {chances_left}', 'magenta')
+        
+            #ask the user to guess a letter
+            letter_guessed = ask_for_letter(display_list, wrong_letters)
+        
+            #check if the letter guessed is in the word
+            letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
+        
+            #if the letter guessed is not in the word, tell the user and display the letters guessed that aren't in the word, as well as the number of guesses left (maybe empty boxes?)
+            if not letter_guessed_in_word:
+                delay = 2
+                update_wrong_guesses(wrong_letters, letter_guessed)
+                chances_left -= 1
+                cprint(f'"{letter_guessed}" is not in the word.', 'red')
+                print()
+                if chances_left > 1:
+                    cprint(f'You have {chances_left} chances left.', 'yellow')
+                elif chances_left == 1:
+                    cprint('You only have one chance left!', 'magenta')
+                print()
+                
+            # if the letter IS in the word, update the word
+            elif letter_guessed_in_word:
+                delay = 1
+                indices = ind_of_letter(letter_guessed, solution)
+                display_list = update_display(display_list, letter_guessed, indices)
+                cprint(f'"{letter_guessed}" is in the word!', 'green')
+                print()
+                # check if the user has won
+                if check_win(display_list):
+                    cprint("Congratulations, you won!", 'blue')
+                    print()
+                    cprint(f'The word was: {solution}', 'blue')
+                    won = True
+        
+            if chances_left == 0:
+                print('So sorry, you lost!')
+                print()
+                print(f'The word was: {solution}')
+                lost = True
+    
+            if not lost and not won:
+                time.sleep(1)
+                replit.clear()
+    
+        if won or lost:
             print()
-            print(f'The word was: {solution}')
-            play_game = False
+            print('Would you like to play again? Y/N')
+    
+            while True:
+                play_again = input("> ").upper()
+        
+                if play_again == 'Y':
+                    #pick a random word to be the solution
+                    solution = gen_rand_word()
+            
+                    #create a list of blanks for each letter in the solution
+                    display_list = solution_to_list_of_blanks(solution)
+                    won = False
+                    lost = False
+                    chances_left = 7
+                    wrong_letters = []
+                    delay = 2
+    
+                    time.sleep(delay)
+                    replit.clear()
+                    
+                    break
+                elif play_again == 'N':
+                    print('Thanks for playing - goodbye!')
+                    play_game = False
+                    break
+                else:
+                    print('Invalid input. Please enter "Y" or "N"')
 
-        if play_game and not win:
-            time.sleep(delay)
-            replit.clear()
-
-    if win == True or chances_left == 0:
-        break
 
 
-# ####################################################
-# #QUESTIONS
-# ####################################################
-
-# #am I making too many tiny little functions? Should I be combining some of these? I want to go towards "best practices" but I'm not sure what that is really or where the line is
-
-# #single quotes vs double quotes: I can see myself switching back and forth which is no good. I can see the case for using double quotes always because then you can use an apostrophe and not have everything go crazy, but I also feel like when I see other people's code (on CodeWars and stuff) it seems like people generally use single quotes more often
+play_guess_the_word()
