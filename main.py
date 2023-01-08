@@ -5,18 +5,9 @@
 ####################################################
 #TO DO
 ####################################################
-#finish game_rules() - if they know the word, can they guess the whole word? what is the consequence for guessing wrong?
-#gen_rand_word() - maybe I should make my own list of words? Some of these words are terrible
-#also filter out words with apostrophes
-#validate input (make sure it's a letter, make sure it's only one letter)
-#fix 2 chances/1 chance left thing
+#if they know the whole word, can they guess it all at once?
+
 #allow the user to start the game again
-#check if the user already guessed that letter
-#use string.split() somewhere? instead of a loop?
-#display: maybe display the wrong letters in red or something
-#clear the console in between turns and just reprint the same stuff (so it's not super long)
-    # can use import replit
-    # replit.clear())
 
 ####################################################
 #IMPORT
@@ -25,6 +16,7 @@
 import random
 import replit
 import time
+from termcolor import cprint
 from word_list_file import word_list
 
 ####################################################
@@ -69,17 +61,32 @@ def print_display(list):
         print(f"{x} ", end = ' ')
     print()
 
+def list_to_string(list):
+    """changes the list to a string"""
+    output_string = ""
+    
+    for x in list:
+        output_string = output_string + x + " "
 
-def ask_for_letter():
+    return output_string
+
+def ask_for_letter(right_guesses, wrong_guesses):
     """asks the user to guess a letter"""
     while True:
         print()
         print('Guess a letter')
         letter_guessed = input('> ')
-    
-        if letter_guessed.isalpha():
+
+        # validate input: if it's one letter, move on
+        if letter_guessed.isalpha() and len(letter_guessed) == 1:
             letter_guessed = letter_guessed.lower()
-            break
+            if (letter_guessed in right_guesses) or (letter_guessed in wrong_guesses) :
+                print(f'You have already guessed {letter_guessed.lower()}. Try a different letter')
+            else:
+                break
+        # if it's more than one letter, give an error message
+        elif letter_guessed.isalpha():
+            print("Too many characters. Please enter ONE letter only")
         else:
             print("Invalid input. Please enter a letter only")
         print()
@@ -128,7 +135,8 @@ def check_win(list):
 
 while True:
     #pick a random word to be the solution
-    solution = gen_rand_word()
+    # solution = gen_rand_word()
+    solution = 'abc'
     
     #create an array of blanks for each letter in the solution
     display = solution_to_display(solution)
@@ -137,6 +145,7 @@ while True:
     win = False
     chances_left = 7
     wrong_letters = []
+    delay = 2
     
     while play_game and not win:
         #greet the user, explain the rules
@@ -150,53 +159,60 @@ while True:
         #print the letters guessed that are not in the word, if there are any
         if len(wrong_letters) > 0:
             print()
-            print('These letters are NOT in the word:')
-            print_display(wrong_letters)
+            cprint('not in the word:', 'red')
+            wrong_lets = list_to_string(wrong_letters)
+            cprint(wrong_lets, 'red')
             print()
+            if chances_left > 1:
+                cprint(f'chances left: {chances_left}', 'yellow')
+            elif chances_left == 1:
+                cprint(f'chances left: {chances_left}', 'magenta')
     
         #ask the user to guess a letter
-        letter_guessed = ask_for_letter()
+        letter_guessed = ask_for_letter(display, wrong_letters)
     
         #check if the letter guessed is in the word
         letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
     
         #if the letter guessed is not in the word, tell the user and display the letters guessed that aren't in the word, as well as the number of guesses left (maybe empty boxes?)
         if not letter_guessed_in_word:
+            delay = 2
             update_wrong_guesses(wrong_letters, letter_guessed)
             chances_left -= 1
-            print(f'"{letter_guessed}" is not in the word.')
+            cprint(f'"{letter_guessed}" is not in the word.', 'red')
             print()
-            print(f'You have {chances_left} chance(s) left.')
+            if chances_left > 1:
+                cprint(f'You have {chances_left} chances left.', 'yellow')
+            elif chances_left == 1:
+                cprint('You only have one chance left!', 'magenta')
             print()
             
         # if the letter IS in the word, update the word
         elif letter_guessed_in_word:
+            delay = 1
             indices = ind_of_letter(letter_guessed, solution)
             display = update_display(display, letter_guessed, indices)
-            print(f'"{letter_guessed}" is in the word!')
+            cprint(f'"{letter_guessed}" is in the word!', 'green')
             print()
             # check if the user has won
             if check_win(display):
-                print("Congratulations, you won!")
-                print(f"The word was {solution}")
-                win = False
+                cprint("Congratulations, you won!", 'blue')
+                print()
+                cprint(f'The word was: {solution}', 'blue')
+                win = True
     
         if chances_left == 0:
             print('So sorry, you lost!')
-            print(f'The word was {solution}')
+            print()
+            print(f'The word was: {solution}')
             play_game = False
 
         if play_game and not win:
-            time.sleep(2)
+            time.sleep(delay)
             replit.clear()
 
-# display the word/incorrect guesses
-# prompt for another guess
-
-# after ___ incorrect guesses, the user loses
-# of if the user guesses the word, they win
-
-# ask if they want to play again
+    if win == True or chances_left == 0:
+        break
 
 
 # ####################################################

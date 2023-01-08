@@ -385,6 +385,17 @@ doc = ["sphinx-rtd-theme (>=1.0.0)", "sphinx-autodoc-typehints (>=1.18.1)", "sph
 dev = ["build (>=0.7.0)", "pytest-timeout (>=2.1.0)", "pytest (>=7.0.1)"]
 
 [[package]]
+name = "termcolor"
+version = "2.2.0"
+description = "ANSI color formatting for output in terminal"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+tests = ["pytest", "pytest-cov"]
+
+[[package]]
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
@@ -486,7 +497,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.0,<3.9"
-content-hash = "7106f2fc58bd8e6470020d0b88ebdf975be4177c47bc41ab9ade3b55bac9d5e6"
+content-hash = "afec0af3de610bea1433a158abebeab3b7c02490224e81791208dd6696af8b75"
 
 [metadata.files]
 aiohttp = []
@@ -520,6 +531,7 @@ replit = []
 replit-python-lsp-server = []
 requests = []
 rope = []
+termcolor = []
 toml = []
 tomli = []
 typing-extensions = []
