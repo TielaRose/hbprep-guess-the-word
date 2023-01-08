@@ -23,6 +23,8 @@
 ####################################################
 
 import random
+import replit
+import time
 from word_list_file import word_list
 
 ####################################################
@@ -183,6 +185,10 @@ while True:
             print('So sorry, you lost!')
             print(f'The word was {solution}')
             play_game = False
+
+        if play_game and not win:
+            time.sleep(2)
+            replit.clear()
 
 # display the word/incorrect guesses
 # prompt for another guess
