@@ -46,8 +46,8 @@ def gen_rand_word():
 
     return solution_word  
 
-def solution_to_display(word):
-    """changes the solution word to an array of blank spaces (one space per letter in the solution word)"""
+def solution_to_list_of_blanks(word):
+    """changes the solution word to an array of blank spaces (two spaces per letter in the solution word)"""
     output = []
 
     for let in word:
@@ -55,11 +55,23 @@ def solution_to_display(word):
 
     return output
 
-def print_display(list):
-    """prints a list to the console"""
-    for x in list:
-        print(f"{x} ", end = ' ')
-    print()
+def print_box(str):
+    """Print a box around a string"""
+    box_width = len(str) + 2
+    
+    # create each line
+    line1 = f'╔{"═" * box_width}╗'
+    line2 = f'║{" " * box_width}║'
+    line3 = f'║ {str} ║'
+    line4 = line2
+    line5 = f'╚{"═" * box_width}╝'
+
+    # print each line
+    cprint(line1, 'blue')
+    cprint(line2, 'blue')
+    cprint(line3, 'blue')
+    cprint(line4, 'blue')
+    cprint(line5, 'blue')
 
 def list_to_string(list):
     """changes the list to a string"""
@@ -138,8 +150,8 @@ while True:
     # solution = gen_rand_word()
     solution = 'abc'
     
-    #create an array of blanks for each letter in the solution
-    display = solution_to_display(solution)
+    #create a list of blanks for each letter in the solution
+    display_list = solution_to_list_of_blanks(solution)
     
     play_game = True
     win = False
@@ -152,9 +164,9 @@ while True:
         greet_user()
         print_game_rules()
         
-        #print the display word (blank spaces) to the console
-        print('The word is:')
-        print_display(display)
+        #print the display word (blank spaces/guesses) to the console
+        display_string = ' '.join(display_list)
+        print_box(display_string)
 
         #print the letters guessed that are not in the word, if there are any
         if len(wrong_letters) > 0:
@@ -169,7 +181,7 @@ while True:
                 cprint(f'chances left: {chances_left}', 'magenta')
     
         #ask the user to guess a letter
-        letter_guessed = ask_for_letter(display, wrong_letters)
+        letter_guessed = ask_for_letter(display_list, wrong_letters)
     
         #check if the letter guessed is in the word
         letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
@@ -191,11 +203,11 @@ while True:
         elif letter_guessed_in_word:
             delay = 1
             indices = ind_of_letter(letter_guessed, solution)
-            display = update_display(display, letter_guessed, indices)
+            display_list = update_display(display_list, letter_guessed, indices)
             cprint(f'"{letter_guessed}" is in the word!', 'green')
             print()
             # check if the user has won
-            if check_win(display):
+            if check_win(display_list):
                 cprint("Congratulations, you won!", 'blue')
                 print()
                 cprint(f'The word was: {solution}', 'blue')
