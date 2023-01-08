@@ -124,60 +124,65 @@ def check_win(list):
 #GAME PLAY
 ####################################################
 
-#greet the user, explain the rules
-greet_user()
-print_game_rules()
+while True:
+    #pick a random word to be the solution
+    solution = gen_rand_word()
     
-#pick a random word to be the solution
-solution = gen_rand_word()
-
-#create an array of blanks for each letter in the solution
-display = solution_to_display(solution)
-
-play_game = True
-win = False
-chances_left = 7
-wrong_letters = []
-
-while play_game and not win:
-    #print the display word (blank spaces) to the console
-    print('The word is:')
-    print_display(display)
-
-    #ask the user to guess a letter
-    letter_guessed = ask_for_letter()
-
-    #check if the letter guessed is in the word
-    letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
-
-    #if the letter guessed is not in the word, tell the user and display the letters guessed that aren't in the word, as well as the number of guesses left (maybe empty boxes?)
-    if not letter_guessed_in_word:
-        update_wrong_guesses(wrong_letters, letter_guessed)
-        chances_left -= 1
-        print(f'"{letter_guessed}" is not in the word.')
-        print()
-        print(f'You have {chances_left} chance(s) left.')
-        print()
-        print('These letters are NOT in the word:')
-        print_display(wrong_letters)
-        print()
+    #create an array of blanks for each letter in the solution
+    display = solution_to_display(solution)
+    
+    play_game = True
+    win = False
+    chances_left = 7
+    wrong_letters = []
+    
+    while play_game and not win:
+        #greet the user, explain the rules
+        greet_user()
+        print_game_rules()
         
-    # if the letter IS in the word, update the word
-    elif letter_guessed_in_word:
-        indices = ind_of_letter(letter_guessed, solution)
-        display = update_display(display, letter_guessed, indices)
-        print(f'"{letter_guessed}" is in the word!')
-        print()
-        # check if the user has won
-        if check_win(display):
-            print("Congratulations, you won!")
-            print(f"The word was {solution}")
-            win = False
+        #print the display word (blank spaces) to the console
+        print('The word is:')
+        print_display(display)
 
-    if chances_left == 0:
-        print('So sorry, you lost!')
-        print(f'The word was {solution}')
-        play_game = False
+        #print the letters guessed that are not in the word, if there are any
+        if len(wrong_letters) > 0:
+            print()
+            print('These letters are NOT in the word:')
+            print_display(wrong_letters)
+            print()
+    
+        #ask the user to guess a letter
+        letter_guessed = ask_for_letter()
+    
+        #check if the letter guessed is in the word
+        letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
+    
+        #if the letter guessed is not in the word, tell the user and display the letters guessed that aren't in the word, as well as the number of guesses left (maybe empty boxes?)
+        if not letter_guessed_in_word:
+            update_wrong_guesses(wrong_letters, letter_guessed)
+            chances_left -= 1
+            print(f'"{letter_guessed}" is not in the word.')
+            print()
+            print(f'You have {chances_left} chance(s) left.')
+            print()
+            
+        # if the letter IS in the word, update the word
+        elif letter_guessed_in_word:
+            indices = ind_of_letter(letter_guessed, solution)
+            display = update_display(display, letter_guessed, indices)
+            print(f'"{letter_guessed}" is in the word!')
+            print()
+            # check if the user has won
+            if check_win(display):
+                print("Congratulations, you won!")
+                print(f"The word was {solution}")
+                win = False
+    
+        if chances_left == 0:
+            print('So sorry, you lost!')
+            print(f'The word was {solution}')
+            play_game = False
 
 # display the word/incorrect guesses
 # prompt for another guess
