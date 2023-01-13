@@ -34,7 +34,7 @@ def print_game_rules():
     game_rules = """
 Try to guess the word before your chances run out!
 Guess one letter at a time; if your letter is in 
-the word, you're safe! But you only have 7 chances 
+the word, you're safe! But you only have 10 chances 
 to get it wrong.
 
 Good luck!
@@ -159,7 +159,7 @@ def play_guess_the_word():
         
         won = False
         lost = False
-        chances_left = 7
+        chances_left = 10
         wrong_letters = []
         delay = 2
         
