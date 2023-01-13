@@ -183,9 +183,18 @@ def play_guess_the_word():
                     cprint(f'chances left: {chances_left}', 'yellow')
                 elif chances_left == 1:
                     cprint(f'chances left: {chances_left}', 'magenta')
+
+            # check if the user has won
+            if check_win(display_list):
+                print()
+                cprint("Congratulations, you won!", 'blue')
+                print()
+                cprint(f'The word was: {solution}', 'blue')
+                won = True        
         
             #ask the user to guess a letter
-            letter_guessed = ask_for_letter(display_list, wrong_letters)
+            if not won:    
+                letter_guessed = ask_for_letter(display_list, wrong_letters)
         
             #check if the letter guessed is in the word
             letter_guessed_in_word = is_letter_guessed_in_word(letter_guessed, solution)
@@ -204,18 +213,13 @@ def play_guess_the_word():
                 print()
                 
             # if the letter IS in the word, update the word
-            elif letter_guessed_in_word:
-                delay = 1
-                indices = ind_of_letter(letter_guessed, solution)
-                display_list = update_display(display_list, letter_guessed, indices)
-                cprint(f'"{letter_guessed}" is in the word!', 'green')
-                print()
-                # check if the user has won
-                if check_win(display_list):
-                    cprint("Congratulations, you won!", 'blue')
+            if not won:
+                if letter_guessed_in_word:
+                    delay = 1
+                    indices = ind_of_letter(letter_guessed, solution)
+                    display_list = update_display(display_list, letter_guessed, indices)
+                    cprint(f'"{letter_guessed}" is in the word!', 'green')
                     print()
-                    cprint(f'The word was: {solution}', 'blue')
-                    won = True
         
             if chances_left == 0:
                 print('So sorry, you lost!')
